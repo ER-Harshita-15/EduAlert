@@ -29,12 +29,12 @@ __pycache__/
 ehthumbs.db
 Thumbs.db
 
-# Don't ignore model files - they're needed for deployment
-# *.h5
-# *.pkl
-# *.pt
-# *.onnx
-# /models/
+
+ *.h5
+*.pkl
+ *.pt
+*.onnx
+/models/
 
 # Large data files (keep sample data)
 # /data/*.csv
