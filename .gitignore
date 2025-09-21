@@ -28,13 +28,8 @@ __pycache__/
 .Trashes
 ehthumbs.db
 Thumbs.db
+#dont include models in it if you want to deploy the app
 
-
- *.h5
-*.pkl
- *.pt
-*.onnx
-/models/
 
 # Large data files (keep sample data)
 # /data/*.csv
