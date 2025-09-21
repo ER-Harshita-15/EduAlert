@@ -7,8 +7,38 @@ ENV/
 env.bak/
 venv.bak/
 
-*.h5
-*.pkl
-*.pt
-*.onnx
-/models/
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Don't ignore model files - they're needed for deployment
+# *.h5
+# *.pkl
+# *.pt
+# *.onnx
+# /models/
+
+# Large data files (keep sample data)
+# /data/*.csv
+
+# Temporary files
+*.tmp
+*.temp
