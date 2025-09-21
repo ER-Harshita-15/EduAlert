@@ -6,3 +6,9 @@ env/
 ENV/
 env.bak/
 venv.bak/
+
+*.h5
+*.pkl
+*.pt
+*.onnx
+/models/
