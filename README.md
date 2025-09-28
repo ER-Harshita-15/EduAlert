@@ -1,11 +1,9 @@
 ﻿# EduAlert
 # 🎓 Student Risk Assessment System
 
-An AI-powered system that predicts student academic risk using machine l
+An AI-powered system that predicts student academic risk using machine learning to identify students who may need additional support.
 
 [🎥 Watch Model Usecase Video](https://github.com/user-attachments/assets/3cc55e8f-3d2f-443a-8f23-4286bdcf3cfa)
-
-earning to identify students who may need additional support.
 
 ## Folder Structure 
 
@@ -84,3 +82,4 @@ This system uses anonymized student data for demonstration purposes. In a real d
 ---
 
 Built with ❤️ using Streamlit and scikit-learn
+
