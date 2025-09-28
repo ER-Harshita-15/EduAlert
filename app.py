@@ -22,165 +22,180 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
 <style>
+    /* --- Base styles for both themes --- */
     .main-header {
         font-size: 2.5rem;
-        color: #2E86AB;
+        font-weight: 600;
+        margin-bottom: 1rem;
         text-align: center;
-        margin-bottom: 2rem;
-        font-weight: bold;
     }
-    .risk-high {
-        background: linear-gradient(90deg, #ffebee, #ffcdd2);
-        border-left: 5px solid #f44336;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        color: #333333;
-    }
-    .risk-low {
-        background: linear-gradient(90deg, #e8f5e8, #c8e6c9);
-        border-left: 5px solid #4caf50;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        color: #333333;
-    }
-    .risk-medium {
-        background: linear-gradient(90deg, #fff3e0, #ffe0b2);
-        border-left: 5px solid #ff9800;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        color: #333333;
-    }
-    .metric-card {
-        background-color: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 10px;
-        border: 1px solid #dee2e6;
-        margin: 0.5rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .profile-section {
-        background-color: #f8f9fa;
+    .metric-card, .profile-section, .stMetric {
         padding: 1rem;
         border-radius: 10px;
-        margin: 1rem 0;
-        border-left: 4px solid #2E86AB;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
     }
     .recommendation-item {
-        background-color: #e3f2fd;
-        padding: 0.8rem;
-        margin: 0.5rem 0;
-        border-radius: 8px;
-        border-left: 3px solid #2196f3;
-        /* FIX: Set a dark color for the main text */
-        color: #333333; 
-    }
-    
-    /* COMPREHENSIVE FIX FOR ALL WHITE CONTAINERS */
-    .stMetric, .stMetric > div, .stMetric > div > div {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-    }
-    
-    /* Fix all Streamlit containers */
-    .element-container, .stMarkdown, .stMarkdown > div {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    
-    .block-container {
-        background-color: transparent !important;
-    }
-    
-    /* Fix columns */
-    .stColumn, .stColumn > div {
-        background-color: transparent !important;
-    }
-    
-    /* Fix expandable containers */
-    .streamlit-expanderHeader, .streamlit-expanderContent {
-        background-color: transparent !important;
-        border: none !important;
-    }
-    
-    /* Fix all divs that might have white background */
-    div[data-testid="metric-container"] {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    
-    div[data-testid="column"] {
-        background-color: transparent !important;
-    }
-    
-    div[data-baseweb="base-input"] {
-        background-color: transparent !important;
-    }
-    
-    /* Custom metric styling */
-    .custom-metric {
-        background-color: #f8f9fa;
         padding: 1rem;
         border-radius: 8px;
-        border: 1px solid #dee2e6;
         margin: 0.5rem 0;
-        text-align: center;
     }
-    
-    .custom-metric-value {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #2E86AB;
+    .risk-high, .risk-low, .risk-medium {
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+        font-weight: 500;
     }
-    
-    .custom-metric-label {
-        font-size: 0.9rem;
-        color: #666;
-        margin-bottom: 0.5rem;
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 24px;
     }
-    
-    .custom-metric-delta {
-        font-size: 0.8rem;
-        color: #28a745;
+    .stTabs [data-baseweb="tab-list"] button {
+        margin-right: 18px !important;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
     }
-    
-    /* Override any remaining white backgrounds */
-    .main .block-container {
-        background-color: transparent !important;
+
+    /* --- NEW Light theme --- */
+    @media (prefers-color-scheme: light), [data-theme="light"], .stApp[data-theme="light"] {
+        .stApp, .block-container {
+            background-color: #f9fbfd !important; /* very light grey-blue */
+            color: #212121 !important;
+        }
+        /* Headings */
+        .main-header {
+            color: #0d47a1 !important; /* Deep Blue */
+        }
+
+        /* Risk cards */
+        .risk-high {
+            background: #fdecea !important;
+            border-left: 4px solid #d32f2f !important;
+            color: #b71c1c !important;
+        }
+        .risk-low {
+            background: #edf7ed !important;
+            border-left: 4px solid #2e7d32 !important;
+            color: #1b5e20 !important;
+        }
+        .risk-medium {
+            background: #fff8e1 !important;
+            border-left: 4px solid #ef6c00 !important;
+            color: #e65100 !important;
+        }
+
+        /* Metrics / profile cards */
+        .metric-card, .profile-section, .stMetric {
+            background-color: #ffffff !important; /* Pure white cards */
+            border: 1px solid #e3f2fd !important; /* Light blue border */
+            color: #212121 !important;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.08) !important; /* Blue-tinted subtle shadow */
+        }
+
+        /* Recommendations */
+        .recommendation-item {
+            background: #e3f2fd !important; /* Light blue */
+            border-left: 3px solid #1976d2 !important;
+            color: #0d47a1 !important;
+        }
+
+        /* Main background */
+        .stApp, .block-container {
+            background-color: #f9fbfd !important; /* Very light grey-blue */
+            color: #212121 !important;
+        }
+
+        /* Sidebar */
+        section[data-testid="stSidebar"] {
+            background-color: #ffffff !important;
+            color: #212121 !important;
+            border-right: 1px solid #e0e0e0 !important;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.05);
+        }
+
+        /* Tabs */
+        .stTabs [data-baseweb="tab-list"] button {
+            color: #424242 !important;
+            background-color: #f5f5f5 !important;
+            border: 1px solid #e0e0e0 !important;
+        }
+        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+            color: #ffffff !important;
+            background-color: #1976d2 !important;
+            border: 1px solid #1976d2 !important;
+        }
     }
-    
-    .stApp {
-        background-color: #0e1117;
+    /* --- Dark theme --- */
+    @media (prefers-color-scheme: dark), [data-theme="dark"], .stApp[data-theme="dark"] {
+        .stApp, .block-container {
+            background-color: #121212 !important; /* true dark */
+            color: #e0e0e0 !important;
+        }
+        .main-header {
+            color: #90caf9 !important; /* Blue 200 */
+        }
+        .risk-high {
+            background: linear-gradient(135deg, #2d1b1b, #3d2525) !important;
+            border-left: 4px solid #ef5350 !important; /* Red 400 */
+            color: #ef9a9a !important; /* Red 200 */
+        }
+        .risk-low {
+            background: linear-gradient(135deg, #1b2d1b, #253d25) !important;
+            border-left: 4px solid #66bb6a !important; /* Green 400 */
+            color: #a5d6a7 !important; /* Green 200 */
+        }
+        .risk-medium {
+            background: linear-gradient(135deg, #332b1b, #463a25) !important;
+            border-left: 4px solid #ffa726 !important; /* Orange 400 */
+            color: #ffcc80 !important; /* Orange 200 */
+        }
+        .metric-card, .profile-section, .stMetric {
+            background-color: #2d3748 !important; /* Gray 700 */
+            border: 1px solid #4a5568 !important;
+            color: #e2e8f0 !important; /* Gray 200 */
+        }
+        .recommendation-item {
+            background: linear-gradient(135deg, #1a365d, #2c5282) !important;
+            border-left: 3px solid #64b5f6 !important; /* Blue 300 */
+            color: #bbdefb !important; /* Blue 100 */
+        }
+        .stApp, .block-container {
+            background-color: #121212 !important; /* true dark bg */
+            color: #e0e0e0 !important;
+        }
+        section[data-testid="stSidebar"] {
+            background-color: #1e1e1e !important;
+            color: #e0e0e0 !important;
+            border-right: 1px solid #333333 !important;
+        }
+        .stTabs [data-baseweb="tab-list"] button {
+            color: #b0bec5 !important; /* Grey 400 */
+            background-color: transparent !important;
+            border: 1px solid #4a5568 !important;
+        }
+        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+            color: #90caf9 !important; /* Blue 200 */
+            background-color: #1e3a5f !important; /* Blue Dark */
+            border: 1px solid #64b5f6 !important;
+        }
     }
-    
-    /* Hide Streamlit branding */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* Additional fixes for specific elements */
-    [data-testid="stMetricValue"] {
-        background-color: transparent !important;
+
+    /* --- Hover and focus (works in both themes) --- */
+    .metric-card:hover, .profile-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     }
-    
-    [data-testid="stMetricLabel"] {
-        background-color: transparent !important;
+    .stTabs [data-baseweb="tab-list"] button:hover {
+        opacity: 0.95;
+        transform: translateY(-1px);
     }
-    
-    .css-1d391kg, .css-12oz5g7 {
-        background-color: transparent !important;
+    .stTabs [data-baseweb="tab-list"] button:focus {
+        outline: 2px solid #2196f3;
+        outline-offset: 2px;
     }
 </style>
 """, unsafe_allow_html=True)
+
 
 @st.cache_data
 def load_model_components():
@@ -327,7 +342,7 @@ def create_risk_gauge(probability):
         }
     ))
     
-    fig.update_layout(height=350, font={'color': "white", 'family': "Arial"})
+    fig.update_layout(height=350, font={'color': "darkblue", 'family': "Arial"})
     return fig
 
 def create_factors_chart(top_factors, student_data):
@@ -510,22 +525,6 @@ def get_recommendations(student_data, risk_probability):
     
     return recommendations
 
-def display_custom_metric(label, value, delta=None):
-    """Display custom metric without Streamlit's default styling"""
-    delta_html = ""
-    if delta is not None:
-        delta_color = "#28a745" if delta >= 0 else "#dc3545"
-        delta_symbol = "+" if delta >= 0 else ""
-        delta_html = f'<div class="custom-metric-delta" style="color: {delta_color};">{delta_symbol}{delta}</div>'
-    
-    st.markdown(f"""
-    <div class="custom-metric">
-        <div class="custom-metric-label">{label}</div>
-        <div class="custom-metric-value">{value}</div>
-        {delta_html}
-    </div>
-    """, unsafe_allow_html=True)
-
 # Main App
 def main():
     # Title and header
@@ -601,10 +600,10 @@ def main():
             # Risk gauge
             st.plotly_chart(create_risk_gauge(risk_prob), use_container_width=True)
             
-            # Risk probabilities with custom styling
+            # Risk probabilities
             st.markdown("### 📈 Probability Breakdown")
-            display_custom_metric("Risk Probability", f"{risk_prob:.1%}")
-            display_custom_metric("Safe Probability", f"{1-risk_prob:.1%}")
+            st.metric("Risk Probability", f"{risk_prob:.1%}", delta=None)
+            st.metric("Safe Probability", f"{1-risk_prob:.1%}", delta=None)
         
         with col2:
             # Top factors chart
@@ -618,28 +617,29 @@ def main():
         with col1:
             st.markdown("### 📚 Academic")
             exam_score = student_data.get('Exam_Score', 0)
-            display_custom_metric("Exam Score", f"{exam_score}/100")
-            display_custom_metric("Previous Scores", f"{student_data.get('Previous_Scores', 0)}")
-            display_custom_metric("Study Hours/Week", f"{student_data.get('Hours_Studied', 0)}")
+            st.metric("Exam Score", f"{exam_score}/100", 
+                     delta=f"{exam_score - student_data.get('Previous_Scores', exam_score):+.0f}")
+            st.metric("Previous Scores", f"{student_data.get('Previous_Scores', 0)}")
+            st.metric("Study Hours/Week", f"{student_data.get('Hours_Studied', 0)}")
         
         with col2:
             st.markdown("### 📈 Engagement")
             attendance = student_data.get('Attendance', 0)
-            display_custom_metric("Attendance", f"{attendance}%")
-            display_custom_metric("Motivation", student_data.get('Motivation_Level', 'N/A'))
-            display_custom_metric("Sleep Hours", f"{student_data.get('Sleep_Hours', 0)}")
+            st.metric("Attendance", f"{attendance}%")
+            st.metric("Motivation", student_data.get('Motivation_Level', 'N/A'))
+            st.metric("Sleep Hours", f"{student_data.get('Sleep_Hours', 0)}")
         
         with col3:
             st.markdown("### 👨‍👩‍👧‍👦 Support")
-            display_custom_metric("Parental Involvement", student_data.get('Parental_Involvement', 'N/A'))
-            display_custom_metric("Access to Resources", student_data.get('Access_to_Resources', 'N/A'))
-            display_custom_metric("Tutoring Sessions", f"{student_data.get('Tutoring_Sessions', 0)}")
+            st.metric("Parental Involvement", student_data.get('Parental_Involvement', 'N/A'))
+            st.metric("Access to Resources", student_data.get('Access_to_Resources', 'N/A'))
+            st.metric("Tutoring Sessions", f"{student_data.get('Tutoring_Sessions', 0)}")
         
         with col4:
             st.markdown("### 🌟 Environment")
-            display_custom_metric("Peer Influence", student_data.get('Peer_Influence', 'N/A'))
-            display_custom_metric("School Type", student_data.get('School_Type', 'N/A'))
-            display_custom_metric("Learning Disabilities", student_data.get('Learning_Disabilities', 'N/A'))
+            st.metric("Peer Influence", student_data.get('Peer_Influence', 'N/A'))
+            st.metric("School Type", student_data.get('School_Type', 'N/A'))
+            st.metric("Learning Disabilities", student_data.get('Learning_Disabilities', 'N/A'))
         
         # Recommendations
         st.markdown("## 💡 Personalized Recommendations")
