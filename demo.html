@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAlert: Interactive Explainer with AI Features</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Calm Harmony" - A palette of warm neutrals (bg-stone-50), professional blues (blue-600), and subtle accents (amber-500, red-500, green-500) for clarity and a supportive feel. -->
+    <!-- Application Structure Plan: A narrative-driven, single-page scrolling experience that mirrors the video script's flow (Problem -> Solution -> Impact). The core is a highly interactive "Solution" section designed as a simulated dashboard. Users can click on different student profiles to dynamically update charts and data, actively exploring the tool's functionality rather than passively consuming information. This structure was chosen to transform the linear story of the video into an engaging, hands-on demonstration, maximizing user understanding and retention of the product's value proposition. -->
+    <!-- Visualization & Content Choices: 
+        - Problem (Fragmented Data): Goal: Show chaos. Method: Styled HTML grid representing data silos. Interaction: None, static visual. Justification: Simple, clear representation of the core problem.
+        - Solution (Dashboard): Goal: Demonstrate data unification and clarity. Method: Chart.js Line, Bar, and Doughnut charts. Interaction: Clickable student list dynamically updates all charts and text info. Justification: Provides a tangible, interactive feel of the product's main feature. Library: Chart.js.
+        - Solution (Alerts & Chatbot): Goal: Showcase support features. Method: Styled HTML mockups of a phone and chat window. Interaction: Clickable pre-set question in chatbot. Justification: Simulates the feature's utility without complex implementation.
+        - Solution (ML Insights): Goal: Explain predictive power. Method: Chart.js Bar chart showing risk scores. Interaction: Hover tooltips. Justification: Simplifies the complex ML concept into an easily digestible visual comparison. Library: Chart.js.
+        - Impact (Benefits): Goal: Quantify success. Method: Animated number counters and a summary bar chart. Interaction: Numbers animate on scroll. Justification: Creates a visually engaging and memorable representation of the positive outcomes. Library: Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            text-align: center;
+        }
+        .student-list-item {
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .student-list-item:hover {
+            background-color: #eef2ff; /* indigo-100 */
+        }
+        .student-list-item.active {
+            background-color: #4338ca; /* indigo-700 */
+            color: white;
+            transform: scale(1.02);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 smooth-scroll">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600">
+                EduAlert
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#problem" class="text-slate-600 hover:text-blue-600">The Problem</a>
+                <a href="#solution" class="text-slate-600 hover:text-blue-600">Our Solution</a>
+                <a href="#impact" class="text-slate-600 hover:text-blue-600">Impact</a>
+                <a href="#cta" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Request a Demo</a>
+            </div>
+            <div class="md:hidden">
+                <a href="#cta" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Demo</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 text-center bg-white">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">Early Alerts, Brighter Futures.</h1>
+                <p class="mt-4 text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">EduAlert transforms student guidance with AI-powered insights, ensuring no student slips through the cracks.</p>
+                <a href="#solution" class="mt-8 inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition">Explore the Dashboard</a>
+            </div>
+        </section>
+
+        <section id="problem" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">The Silent Struggle</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Every year, countless students navigate their academic journey feeling lost. The warning signs are there, but they're hidden in a maze of fragmented data.</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-red-500">
+                        <h3 class="font-bold text-xl mb-2">Attendance Records</h3>
+                        <p class="text-slate-500">Held by administration, often updated weekly.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-amber-500">
+                        <h3 class="font-bold text-xl mb-2">Exam Scores</h3>
+                        <p class="text-slate-500">Managed by individual academic departments.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-sky-500">
+                        <h3 class="font-bold text-xl mb-2">Fee Payments</h3>
+                        <p class="text-slate-500">Tracked separately by the finance office.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500">
+                        <h3 class="font-bold text-xl mb-2">Activities Log</h3>
+                        <p class="text-slate-500">Maintained by student affairs coordinators.</p>
+                    </div>
+                </div>
+                <p class="mt-12 text-lg text-slate-600 max-w-3xl mx-auto">This disconnected system makes it impossible for mentors to see the complete picture and intervene effectively.</p>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 md:py-24 bg-slate-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">The EduAlert Solution: A Unified View</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mt-4">EduAlert unifies every critical piece of student data into one intelligent, cohesive system, providing a 360-degree view that transforms fragmented data into actionable intelligence.</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+                    <div class="p-6 md:p-8 border-b border-slate-200">
+                        <h3 class="text-2xl font-bold mb-1">Interactive Student Dashboard</h3>
+                        <p class="text-slate-500">Click on a student to see their complete, real-time profile and generate AI-powered insights.</p>
+                    </div>
+                    <div class="md:flex">
+                        <div class="md:w-1/4 p-6 border-r border-slate-200 bg-slate-50">
+                            <h4 class="font-semibold mb-4 text-lg">Class Roster</h4>
+                            <ul id="studentList" class="space-y-2">
+                            </ul>
+                        </div>
+                        <div class="md:w-3/4 p-6 md:p-8">
+                            <div class="flex flex-wrap justify-between items-start mb-6">
+                                <div class="flex items-center">
+                                    <div id="studentAvatar" class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center text-2xl font-bold text-slate-600 mr-4"></div>
+                                    <div>
+                                        <h3 id="studentName" class="text-3xl font-bold text-slate-900"></h3>
+                                        <div id="riskIndicator" class="px-3 py-1 text-sm font-medium rounded-full inline-block mt-1"></div>
+                                    </div>
+                                </div>
+                                <button id="generatePlanBtn" class="mt-4 md:mt-0 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition text-sm font-semibold flex items-center">
+                                    <span class="mr-2">✨</span> Generate Intervention Plan
+                                </button>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="text-xl font-semibold mb-2">Academic Performance</h4>
+                                    <div class="chart-container h-64 md:h-auto">
+                                        <canvas id="academicChart"></canvas>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-semibold mb-2">Attendance Record</h4>
+                                    <div class="chart-container h-64 md:h-auto">
+                                        <canvas id="attendanceChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                             <div id="interventionPlanContainer" class="mt-8 border-t border-slate-200 pt-6"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mt-12">
+                    <div class="bg-white p-8 rounded-xl shadow-xl">
+                         <h3 class="text-2xl font-bold mb-4">Timely Alerts & AI Support</h3>
+                         <p class="text-slate-600 mb-6">Receive automated alerts and provide students with an AI-powered chatbot for immediate, empathetic guidance.</p>
+                         <div class="flex items-center p-4 bg-slate-100 rounded-lg shadow-inner">
+                            <div class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center font-bold mr-4 shrink-0">!</div>
+                            <div>
+                                <p class="font-semibold">High Priority Alert</p>
+                                <p class="text-sm text-slate-600">Alex Ray has missed 3 consecutive classes.</p>
+                            </div>
+                         </div>
+                         <div class="mt-4 p-4 border border-slate-200 rounded-lg">
+                            <p class="font-semibold mb-2">✨ Student AI Chatbot</p>
+                            <div class="text-sm bg-slate-100 p-3 rounded-lg">
+                                <span class="font-bold">Student:</span> What happens if I fail this semester's math exam?
+                            </div>
+                            <div id="chatbotResponseContainer" class="mt-2">
+                                <!-- AI response will be injected here -->
+                            </div>
+                            <button id="askChatbot" class="mt-3 text-sm text-blue-600 font-semibold hover:underline">Ask Question</button>
+                         </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-xl">
+                        <h3 class="text-2xl font-bold mb-4">Predictive Insights</h3>
+                        <p class="text-slate-600 mb-6">Our machine learning model analyzes patterns to identify students at risk of dropping out, even before traditional warning signs appear.</p>
+                        <div class="chart-container h-72 md:h-auto">
+                            <canvas id="riskScoreChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="impact" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">The Impact: Brighter Futures</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">By enabling timely interventions, EduAlert creates a supportive ecosystem that delivers measurable results.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="stat-card">
+                        <div id="dropoutRate" class="text-5xl font-bold text-blue-600">0%</div>
+                        <p class="mt-2 text-slate-600 font-medium">Reduction in Dropout Rates</p>
+                    </div>
+                    <div class="stat-card">
+                        <div id="engagementRate" class="text-5xl font-bold text-blue-600">0%</div>
+                        <p class="mt-2 text-slate-600 font-medium">Increase in Student Engagement</p>
+                    </div>
+                    <div class="stat-card">
+                        <div id="interventionRate" class="text-5xl font-bold text-blue-600">0%</div>
+                        <p class="mt-2 text-slate-600 font-medium">Faster Mentor Intervention Time</p>
+                    </div>
+                </div>
+                 <div class="mt-12 bg-white p-8 rounded-xl shadow-xl max-w-5xl mx-auto">
+                    <h3 class="text-2xl font-bold mb-4">Institutional Improvement Over Time</h3>
+                    <div class="chart-container h-72 md:h-auto">
+                         <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta" class="py-16 md:py-24 bg-blue-600">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Change the Narrative from Risk to Resilience.</h2>
+                <p class="mt-4 text-lg text-blue-200 max-w-3xl mx-auto">See how EduAlert can transform your institution's approach to student guidance.</p>
+                <button class="mt-8 bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-slate-100 transition transform hover:scale-105">Request a Personalized Demo</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 EduAlert. All Rights Reserved.</p>
+            <p class="text-sm mt-1">Early Alerts, Brighter Futures.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentStudentId = 'alex_ray';
+            const studentData = {
+                'alex_ray': {
+                    name: 'Alex Ray',
+                    risk: 'High',
+                    avatar: 'AR',
+                    academics: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], scores: [85, 82, 76, 70, 65] },
+                    attendance: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], present: [95, 90, 85, 75, 70] },
+                },
+                'bria_chen': {
+                    name: 'Bria Chen',
+                    risk: 'Low',
+                    avatar: 'BC',
+                    academics: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], scores: [88, 89, 92, 91, 94] },
+                    attendance: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], present: [100, 98, 100, 95, 100] },
+                },
+                'carlos_vega': {
+                    name: 'Carlos Vega',
+                    risk: 'Medium',
+                    avatar: 'CV',
+                    academics: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], scores: [78, 80, 75, 77, 72] },
+                    attendance: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], present: [90, 92, 88, 90, 85] },
+                }
+            };
+
+            const riskStyles = {
+                'High': { bg: 'bg-red-100', text: 'text-red-700', indicator: '🔴' },
+                'Medium': { bg: 'bg-amber-100', text: 'text-amber-700', indicator: '🟡' },
+                'Low': { bg: 'bg-green-100', text: 'text-green-700', indicator: '🟢' }
+            };
+
+            const studentListEl = document.getElementById('studentList');
+            const studentNameEl = document.getElementById('studentName');
+            const studentAvatarEl = document.getElementById('studentAvatar');
+            const riskIndicatorEl = document.getElementById('riskIndicator');
+            const interventionPlanContainer = document.getElementById('interventionPlanContainer');
+            const chatbotResponseContainer = document.getElementById('chatbotResponseContainer');
+
+            let academicChart, attendanceChart, riskScoreChart, impactChart;
+
+            function createChart(ctx, type, data, options) {
+                return new Chart(ctx, { type, data, options });
+            }
+
+            const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, suggestedMax: 100 }, x: { grid: { display: false } } } };
+            const barChartOptions = { ...chartOptions, scales: { y: { beginAtZero: true, suggestedMax: 100 }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } };
+
+            function updateDashboard(studentId) {
+                currentStudentId = studentId;
+                const student = studentData[studentId];
+                if (!student) return;
+
+                studentNameEl.textContent = student.name;
+                studentAvatarEl.textContent = student.avatar;
+                riskIndicatorEl.textContent = `${student.risk} Risk`;
+                riskIndicatorEl.className = `px-3 py-1 text-sm font-medium rounded-full inline-block mt-1 ${riskStyles[student.risk].bg} ${riskStyles[student.risk].text}`;
+                interventionPlanContainer.innerHTML = '';
+                
+                document.querySelectorAll('.student-list-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.studentId === studentId) item.classList.add('active');
+                });
+
+                if (academicChart) academicChart.destroy();
+                academicChart = createChart(document.getElementById('academicChart').getContext('2d'), 'line', { labels: student.academics.labels, datasets: [{ label: 'Score', data: student.academics.scores, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.3, fill: true }] }, chartOptions);
+
+                if (attendanceChart) attendanceChart.destroy();
+                attendanceChart = createChart(document.getElementById('attendanceChart').getContext('2d'), 'bar', { labels: student.attendance.labels, datasets: [{ label: 'Presence %', data: student.attendance.present, backgroundColor: '#10b981', borderRadius: 4 }] }, chartOptions);
+            }
+            
+            Object.keys(studentData).forEach(id => {
+                const li = document.createElement('li');
+                li.className = 'student-list-item p-3 rounded-lg flex items-center justify-between';
+                li.dataset.studentId = id;
+                li.innerHTML = `<span>${studentData[id].name}</span> <span class="text-xl">${riskStyles[studentData[id].risk].indicator}</span>`;
+                li.addEventListener('click', () => updateDashboard(id));
+                studentListEl.appendChild(li);
+            });
+
+            updateDashboard(currentStudentId);
+
+            const riskScoreCtx = document.getElementById('riskScoreChart').getContext('2d');
+            riskScoreChart = createChart(riskScoreCtx, 'bar', { labels: ['Alex R.', 'Bria C.', 'Carlos V.'], datasets: [{ label: 'Dropout Risk Score', data: [85, 20, 60], backgroundColor: ['#ef4444', '#22c55e', '#f59e0b'], borderRadius: 4 }] }, barChartOptions);
+            
+            const impactCtx = document.getElementById('impactChart').getContext('2d');
+            impactChart = createChart(impactCtx, 'bar', { labels: ['Year 1', 'Year 2 (with EduAlert)'], datasets: [ { label: 'Dropout Rate (%)', data: [12, 7], backgroundColor: '#ef4444', borderRadius: 4 }, { label: 'Graduation Rate (%)', data: [88, 93], backgroundColor: '#22c55e', borderRadius: 4 } ] }, { ...barChartOptions, plugins: { legend: { display: true } } });
+            
+            function animateValue(obj, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(progress * (end - start) + start) + '%';
+                    if (progress < 1) window.requestAnimationFrame(step);
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            const impactSection = document.getElementById('impact');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateValue(document.getElementById('dropoutRate'), 0, 40, 1500);
+                        animateValue(document.getElementById('engagementRate'), 0, 25, 1500);
+                        animateValue(document.getElementById('interventionRate'), 0, 50, 1500);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            observer.observe(impactSection);
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            async function callGeminiAPI(prompt, container) {
+                container.innerHTML = '<div class="flex items-center justify-center p-4"><div class="loader"></div></div>';
+                
+                const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (text) {
+                        container.innerHTML = text.replace(/\n/g, '<br>');
+                    } else {
+                        container.innerHTML = '<p class="text-red-500">Could not retrieve a valid response from the AI. Please try again.</p>';
+                    }
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    container.innerHTML = `<p class="text-red-500">An error occurred: ${error.message}</p>`;
+                }
+            }
+
+            document.getElementById('generatePlanBtn').addEventListener('click', () => {
+                const student = studentData[currentStudentId];
+                const prompt = `Act as an expert academic counselor. Generate a personalized intervention plan for a student named ${student.name}.
+                
+                Student Profile:
+                - Risk Level: ${student.risk}
+                - Recent Academic Scores (out of 100): ${student.academics.scores.join(', ')}
+                - Recent Attendance Rate: ${student.attendance.present.join('%, ')}%
+
+                Based on this data, provide a structured plan with 3-4 clear, actionable steps for a mentor to take. The tone should be supportive and professional. Format the output as simple HTML using h3 for the title and an unordered list for the steps.`;
+                
+                const planHtml = `
+                    <h4 class="text-xl font-semibold mb-4 text-slate-800">✨ AI-Generated Intervention Plan for ${student.name}</h4>
+                    <div id="planContent" class="p-4 bg-slate-50 rounded-lg text-slate-700"></div>`;
+                interventionPlanContainer.innerHTML = planHtml;
+                callGeminiAPI(prompt, document.getElementById('planContent'));
+            });
+
+            document.getElementById('askChatbot').addEventListener('click', (e) => {
+                 e.target.disabled = true;
+                 e.target.textContent = 'Thinking...';
+                 const prompt = `As a friendly and supportive school chatbot named EduBot, answer the following student question in a concise paragraph: "What happens if I fail this semester's math exam?" Provide helpful advice and mention potential resources like tutoring or talking to a counselor. Format as simple HTML using a div with a bolded "EduBot:" label.`;
+                 
+                 const responseHtml = `<div class="text-sm bg-blue-100 p-3 rounded-lg mt-2" id="botResponseContent"></div>`;
+                 chatbotResponseContainer.innerHTML = responseHtml;
+                 callGeminiAPI(prompt, document.getElementById('botResponseContent')).finally(() => {
+                    e.target.disabled = false;
+                    e.target.textContent = 'Ask Question';
+                 });
+            });
+
+        });
+    </script>
+</body>
+</html>
+
