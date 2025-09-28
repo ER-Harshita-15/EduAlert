@@ -36,6 +36,7 @@ st.markdown("""
         margin: 1rem 0;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #333333;
     }
     .risk-low {
         background: linear-gradient(90deg, #e8f5e8, #c8e6c9);
@@ -44,6 +45,7 @@ st.markdown("""
         margin: 1rem 0;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #333333;
     }
     .risk-medium {
         background: linear-gradient(90deg, #fff3e0, #ffe0b2);
@@ -52,6 +54,7 @@ st.markdown("""
         margin: 1rem 0;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #333333;
     }
     .metric-card {
         background-color: #f8f9fa;
@@ -74,12 +77,107 @@ st.markdown("""
         margin: 0.5rem 0;
         border-radius: 8px;
         border-left: 3px solid #2196f3;
+        /* FIX: Set a dark color for the main text */
+        color: #333333; 
     }
-    .stMetric {
-        background-color: white;
+    
+    /* COMPREHENSIVE FIX FOR ALL WHITE CONTAINERS */
+    .stMetric, .stMetric > div, .stMetric > div > div {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    
+    /* Fix all Streamlit containers */
+    .element-container, .stMarkdown, .stMarkdown > div {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .block-container {
+        background-color: transparent !important;
+    }
+    
+    /* Fix columns */
+    .stColumn, .stColumn > div {
+        background-color: transparent !important;
+    }
+    
+    /* Fix expandable containers */
+    .streamlit-expanderHeader, .streamlit-expanderContent {
+        background-color: transparent !important;
+        border: none !important;
+    }
+    
+    /* Fix all divs that might have white background */
+    div[data-testid="metric-container"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    div[data-testid="column"] {
+        background-color: transparent !important;
+    }
+    
+    div[data-baseweb="base-input"] {
+        background-color: transparent !important;
+    }
+    
+    /* Custom metric styling */
+    .custom-metric {
+        background-color: #f8f9fa;
         padding: 1rem;
         border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #dee2e6;
+        margin: 0.5rem 0;
+        text-align: center;
+    }
+    
+    .custom-metric-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2E86AB;
+    }
+    
+    .custom-metric-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .custom-metric-delta {
+        font-size: 0.8rem;
+        color: #28a745;
+    }
+    
+    /* Override any remaining white backgrounds */
+    .main .block-container {
+        background-color: transparent !important;
+    }
+    
+    .stApp {
+        background-color: #0e1117;
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Additional fixes for specific elements */
+    [data-testid="stMetricValue"] {
+        background-color: transparent !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        background-color: transparent !important;
+    }
+    
+    .css-1d391kg, .css-12oz5g7 {
+        background-color: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -229,7 +327,7 @@ def create_risk_gauge(probability):
         }
     ))
     
-    fig.update_layout(height=350, font={'color': "darkblue", 'family': "Arial"})
+    fig.update_layout(height=350, font={'color': "white", 'family': "Arial"})
     return fig
 
 def create_factors_chart(top_factors, student_data):
@@ -412,6 +510,22 @@ def get_recommendations(student_data, risk_probability):
     
     return recommendations
 
+def display_custom_metric(label, value, delta=None):
+    """Display custom metric without Streamlit's default styling"""
+    delta_html = ""
+    if delta is not None:
+        delta_color = "#28a745" if delta >= 0 else "#dc3545"
+        delta_symbol = "+" if delta >= 0 else ""
+        delta_html = f'<div class="custom-metric-delta" style="color: {delta_color};">{delta_symbol}{delta}</div>'
+    
+    st.markdown(f"""
+    <div class="custom-metric">
+        <div class="custom-metric-label">{label}</div>
+        <div class="custom-metric-value">{value}</div>
+        {delta_html}
+    </div>
+    """, unsafe_allow_html=True)
+
 # Main App
 def main():
     # Title and header
@@ -487,10 +601,10 @@ def main():
             # Risk gauge
             st.plotly_chart(create_risk_gauge(risk_prob), use_container_width=True)
             
-            # Risk probabilities
+            # Risk probabilities with custom styling
             st.markdown("### 📈 Probability Breakdown")
-            st.metric("Risk Probability", f"{risk_prob:.1%}", delta=None)
-            st.metric("Safe Probability", f"{1-risk_prob:.1%}", delta=None)
+            display_custom_metric("Risk Probability", f"{risk_prob:.1%}")
+            display_custom_metric("Safe Probability", f"{1-risk_prob:.1%}")
         
         with col2:
             # Top factors chart
@@ -504,29 +618,28 @@ def main():
         with col1:
             st.markdown("### 📚 Academic")
             exam_score = student_data.get('Exam_Score', 0)
-            st.metric("Exam Score", f"{exam_score}/100", 
-                     delta=f"{exam_score - student_data.get('Previous_Scores', exam_score):+.0f}")
-            st.metric("Previous Scores", f"{student_data.get('Previous_Scores', 0)}")
-            st.metric("Study Hours/Week", f"{student_data.get('Hours_Studied', 0)}")
+            display_custom_metric("Exam Score", f"{exam_score}/100")
+            display_custom_metric("Previous Scores", f"{student_data.get('Previous_Scores', 0)}")
+            display_custom_metric("Study Hours/Week", f"{student_data.get('Hours_Studied', 0)}")
         
         with col2:
             st.markdown("### 📈 Engagement")
             attendance = student_data.get('Attendance', 0)
-            st.metric("Attendance", f"{attendance}%")
-            st.metric("Motivation", student_data.get('Motivation_Level', 'N/A'))
-            st.metric("Sleep Hours", f"{student_data.get('Sleep_Hours', 0)}")
+            display_custom_metric("Attendance", f"{attendance}%")
+            display_custom_metric("Motivation", student_data.get('Motivation_Level', 'N/A'))
+            display_custom_metric("Sleep Hours", f"{student_data.get('Sleep_Hours', 0)}")
         
         with col3:
             st.markdown("### 👨‍👩‍👧‍👦 Support")
-            st.metric("Parental Involvement", student_data.get('Parental_Involvement', 'N/A'))
-            st.metric("Access to Resources", student_data.get('Access_to_Resources', 'N/A'))
-            st.metric("Tutoring Sessions", f"{student_data.get('Tutoring_Sessions', 0)}")
+            display_custom_metric("Parental Involvement", student_data.get('Parental_Involvement', 'N/A'))
+            display_custom_metric("Access to Resources", student_data.get('Access_to_Resources', 'N/A'))
+            display_custom_metric("Tutoring Sessions", f"{student_data.get('Tutoring_Sessions', 0)}")
         
         with col4:
             st.markdown("### 🌟 Environment")
-            st.metric("Peer Influence", student_data.get('Peer_Influence', 'N/A'))
-            st.metric("School Type", student_data.get('School_Type', 'N/A'))
-            st.metric("Learning Disabilities", student_data.get('Learning_Disabilities', 'N/A'))
+            display_custom_metric("Peer Influence", student_data.get('Peer_Influence', 'N/A'))
+            display_custom_metric("School Type", student_data.get('School_Type', 'N/A'))
+            display_custom_metric("Learning Disabilities", student_data.get('Learning_Disabilities', 'N/A'))
         
         # Recommendations
         st.markdown("## 💡 Personalized Recommendations")
